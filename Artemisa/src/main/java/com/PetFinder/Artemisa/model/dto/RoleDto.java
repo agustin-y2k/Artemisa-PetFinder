@@ -1,4 +1,4 @@
-package com.PetFinder.Artemisa.dto;
+package com.PetFinder.Artemisa.model.dto;
 
 import com.PetFinder.Artemisa.model.ERole;
 import lombok.Data;

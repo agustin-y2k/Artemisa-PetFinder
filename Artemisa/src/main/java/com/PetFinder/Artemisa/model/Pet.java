@@ -9,7 +9,7 @@ import lombok.Data;
 @Table(name = "pet")
 public class Pet {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "pet_id")
     private Long id;
 
@@ -25,7 +25,7 @@ public class Pet {
     private User owner;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publication_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
 }

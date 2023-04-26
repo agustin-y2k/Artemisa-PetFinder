@@ -1,21 +1,21 @@
 package com.PetFinder.Artemisa.service.impl;
 
+import com.PetFinder.Artemisa.exception.EntityNotFoundException;
 import com.PetFinder.Artemisa.model.Pet;
 import com.PetFinder.Artemisa.model.User;
 import com.PetFinder.Artemisa.model.payloads.PetResponse;
 import com.PetFinder.Artemisa.model.payloads.UserRequest;
 import com.PetFinder.Artemisa.model.payloads.UserResponse;
+import com.PetFinder.Artemisa.repository.PetRepository;
 import com.PetFinder.Artemisa.repository.UserRepository;
 import com.PetFinder.Artemisa.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -23,61 +23,86 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private ModelMapper modelMapper;
+    @Autowired
+    private PetServiceImpl petService;
+
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
-    public List<UserResponse> getAllUsers() {
+    public List<UserResponse> getAllUsers() throws EntityNotFoundException {
         List<User> userList = userRepository.findAll();
-        List<UserResponse> userResponseList = new ArrayList<>();
-        for (User user : userList) {
-            UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-            userResponseList.add(userResponse);
+        if (userList.isEmpty()){
+            throw new EntityNotFoundException("Users not found");
+        } else {
+            List<UserResponse> userResponseList = new ArrayList<>();
+            for (User user : userList) {
+                UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+                userResponseList.add(userResponse);
+            }
+            return userResponseList;
         }
-        if (userResponseList.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Users not found");
+    }
+
+    @Override
+    public UserResponse getUserById(Long id) throws EntityNotFoundException {
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()){
+            throw new EntityNotFoundException("User not found");
+        } else {
+            User userReceived = user.get();
+            UserResponse userResponse = modelMapper.map(userReceived, UserResponse.class);
+            return userResponse;
         }
-        return userResponseList;
     }
 
     @Override
-    public UserResponse getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-        return userResponse;
+    public UserResponse getUserByEmail(String email) throws EntityNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (!user.isPresent()){
+            throw new EntityNotFoundException("User not found");
+        } else {
+            User userReceived = user.get();
+            UserResponse userResponse = modelMapper.map(userReceived, UserResponse.class);
+            return userResponse;
+        }
     }
 
     @Override
-    public UserResponse getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email);
-        UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-        return userResponse;
+    public void createUser(UserRequest userRequest){
+        User userExists = userRepository.findByEmail(userRequest.getEmail()).orElse(null);
+        if (userExists != null){
+            throw new IllegalArgumentException("User already exists");
+        } else {
+            User user = modelMapper.map(userRequest, User.class);
+            userRepository.save(user);
+        }
     }
 
     @Override
-    public void createUser(UserRequest userRequest) {
-        User user = modelMapper.map(userRequest, User.class);
-        userRepository.save(user);
+    public void updateUser(UserRequest userRequest, Long id) throws EntityNotFoundException {
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()){
+            throw new EntityNotFoundException("User not found");
+        } else {
+            User userExists = userRepository.findByEmail(userRequest.getEmail()).orElse(null);
+            if (userExists != null && !userExists.getId().equals(id)){
+                throw new IllegalArgumentException("User already exists");
+            }
+            User userReceived = user.get();
+            userReceived.setName(userRequest.getName());
+            userReceived.setEmail(userRequest.getEmail());
+            userRepository.save(userReceived);
+        }
     }
 
     @Override
-    public void updateUser(UserRequest userRequest, Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        user = modelMapper.map(userRequest, User.class);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        userRepository.delete(user);
-    }
-
-    @Override
-    public List<PetResponse> getAllPetsFromUser(String email) {
-        User user = userRepository.findByEmail(email);
-        List<Pet> pets = (List<Pet>) user.getPets();
-        List<PetResponse> petResponses = modelMapper.map(pets, List.class);
-        return petResponses;
+    public void deleteUser(Long id) throws EntityNotFoundException {
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()){
+            throw new EntityNotFoundException("User not found");
+        } else {
+            userRepository.delete(user.get());
+        }
     }
 
 }

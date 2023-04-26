@@ -20,22 +20,27 @@ public class Post {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "details", columnDefinition = "TEXT")
-    private String details;
+
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
 
     @Column(name = "image")
     private String image;
-
-    @Column(name = "status")
-    private Boolean status;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date")
     @CreationTimestamp
     private Date createDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "post_type")
+    private PostType postType;
+
+    @Column(name = "status")
+    private Boolean status;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)

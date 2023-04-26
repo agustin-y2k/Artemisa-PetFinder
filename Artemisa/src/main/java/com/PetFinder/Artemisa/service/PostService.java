@@ -1,20 +1,27 @@
 package com.PetFinder.Artemisa.service;
 
-import com.PetFinder.Artemisa.dto.PostDto;
+import com.PetFinder.Artemisa.exception.EntityNotFoundException;
+import com.PetFinder.Artemisa.model.payloads.PostRequest;
+import com.PetFinder.Artemisa.model.payloads.PostResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface PostService {
-    PostDto getPublicationById(Long id);
 
-    void createPublication(PostDto postDto);
+    List<PostResponse> getAllPosts() throws EntityNotFoundException;
+    PostResponse getPostById(Long id) throws EntityNotFoundException;
 
-    void updatePublication(PostDto postDto);
+    void createPost(PostRequest postRequest) throws EntityNotFoundException;
 
-    void deletePublication(Long id);
+    void updatePost(PostRequest postRequest, Long id) throws EntityNotFoundException;
 
-    List<PostDto> getPublicationsByUserEmail(String email);
+    void deletePost(Long id) throws EntityNotFoundException;
+
+    List<PostResponse> getPostsByUserId(Long Id) throws EntityNotFoundException;
+
+    PostResponse getPostsByPetId(Long Id) throws EntityNotFoundException;
+
 
 }
