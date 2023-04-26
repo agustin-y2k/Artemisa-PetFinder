@@ -1,15 +1,24 @@
 package com.PetFinder.Artemisa.service;
 
-import com.PetFinder.Artemisa.dto.CommentDto;
+import com.PetFinder.Artemisa.exception.EntityNotFoundException;
+import com.PetFinder.Artemisa.model.payloads.CommentRequest;
+import com.PetFinder.Artemisa.model.payloads.CommentResponse;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface CommentService {
-    CommentDto getCommentById(Long id);
 
-    void createComment(CommentDto commentDto);
+    List<CommentResponse> getAllComments() throws EntityNotFoundException;
 
-    void updateComment(CommentDto commentDto);
+    CommentResponse getCommentById(Long id) throws EntityNotFoundException;
 
-    void deleteComment(Long id);
+    List<CommentResponse> getCommentsByPostId(Long id) throws EntityNotFoundException;
+
+    void createComment(CommentRequest commentRequest) throws EntityNotFoundException;
+
+    void updateComment(CommentRequest commentRequest, Long id) throws EntityNotFoundException;
+
+    void deleteComment(Long id) throws EntityNotFoundException;
 }
