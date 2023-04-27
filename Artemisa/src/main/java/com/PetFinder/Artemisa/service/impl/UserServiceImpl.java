@@ -89,7 +89,8 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException("User already exists");
             }
             User userReceived = user.get();
-            userReceived.setName(userRequest.getName());
+            userReceived.setFirstname(userRequest.getFirstname());
+            userReceived.setLastname(userRequest.getLastname());
             userReceived.setEmail(userRequest.getEmail());
             userRepository.save(userReceived);
         }

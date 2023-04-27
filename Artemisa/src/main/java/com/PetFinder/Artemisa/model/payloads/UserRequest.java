@@ -18,7 +18,10 @@ import java.util.List;
 public class UserRequest {
 
     @NotBlank(message = "Name is mandatory")
-    private String name;
+    private String firstname;
+
+    @NotBlank(message = "Lastname is mandatory")
+    private String lastname;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")

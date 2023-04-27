@@ -1,5 +1,6 @@
 package com.PetFinder.Artemisa.service;
 
+import com.PetFinder.Artemisa.model.User;
 import com.PetFinder.Artemisa.model.payloads.PetResponse;
 import com.PetFinder.Artemisa.model.payloads.UserRequest;
 import com.PetFinder.Artemisa.model.payloads.UserResponse;
@@ -7,6 +8,7 @@ import com.PetFinder.Artemisa.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface UserService {
@@ -22,6 +24,5 @@ public interface UserService {
         void updateUser(UserRequest userRequest, Long id) throws EntityNotFoundException;
 
         void deleteUser(Long id) throws EntityNotFoundException;
-
 
 }
