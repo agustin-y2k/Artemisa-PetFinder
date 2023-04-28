@@ -18,8 +18,4 @@ public class CommentRequest {
     @NotNull(message = "Post id is required")
     private Long postId;
 
-    @NotBlank(message = "User id is required")
-    @Email(message = "Email should be valid")
-    private String userEmail;
-
 }

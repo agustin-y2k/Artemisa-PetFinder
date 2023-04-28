@@ -1,0 +1,210 @@
+{
+	"info": {
+		"_postman_id": "6a430af4-0c0f-4c2c-91b8-fdbd74857346",
+		"name": "Post",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15658903"
+	},
+	"item": [
+		{
+			"name": "Get All Post",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/post/getAll",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"post",
+						"getAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/post/getById/id",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"post",
+						"getById",
+						"id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post By User Email",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/post/getByUserEmail/email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"post",
+						"getByUserEmail",
+						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post By Pet Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/post/getByPetId/id",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"post",
+						"getByPetId",
+						"id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsZXJpY2E1NDJAZ21haWwuY29tIiwiaWF0IjoxNjgyNjQ5NjUxLCJleHAiOjE2ODI2NTEwOTF9.GsHGwM0FQkHrV1szEK2RauahF62p5sArd5b8QlmKxDI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"string\",\n  \"content\": \"string\",\n  \"image\": \"string\",\n  \"postType\": \"LOST\",\n  \"petId\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/post/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"post",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsZXJpY2E1NDJAZ21haWwuY29tIiwiaWF0IjoxNjgyNjQ5NjUxLCJleHAiOjE2ODI2NTEwOTF9.GsHGwM0FQkHrV1szEK2RauahF62p5sArd5b8QlmKxDI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"string\",\n  \"content\": \"string\",\n  \"image\": \"string\",\n  \"postType\": \"LOST\",\n  \"petId\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/post/update/id",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"post",
+						"update",
+						"id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Post By Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsZXJpY2E1NDJAZ21haWwuY29tIiwiaWF0IjoxNjgyNjQ5NjUxLCJleHAiOjE2ODI2NTEwOTF9.GsHGwM0FQkHrV1szEK2RauahF62p5sArd5b8QlmKxDI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/post/delete/id",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"post",
+						"delete",
+						"id"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

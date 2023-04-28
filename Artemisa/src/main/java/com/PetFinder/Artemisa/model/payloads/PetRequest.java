@@ -21,8 +21,4 @@ public class PetRequest {
 
     @NotNull(message = "Pet type is mandatory")
     private PetType petType;
-
-    @NotBlank(message = "Owner email is mandatory")
-    @Email(message = "Email should be valid")
-    private String  ownerEmail;
 }

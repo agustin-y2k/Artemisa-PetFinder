@@ -21,14 +21,29 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
 
+    private static final String[] WHITE_LIST_URLS = {
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/webjars/**",
+            "/actuator/**",
+            "/api/v1/auth/**",
+            "/api/v1/**/getAll",
+            "/api/v1/**//getById/**",
+            "/api/v1/**/getByEmail/**",
+            "/api/v1/**/getByUserEmail/**",
+            "/api/v1/**/getByPetId/**",
+            "/api/v1/**/getByPostId/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
-                .permitAll()
+                .requestMatchers(WHITE_LIST_URLS).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

@@ -2,7 +2,6 @@ package com.PetFinder.Artemisa.model;
 
 import com.PetFinder.Artemisa.token.Token;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,7 +32,6 @@ public class User implements UserDetails {
     private String lastname;
 
     @Column(name = "email")
-    @Email
     private String email;
 
     @Column(length = 60)

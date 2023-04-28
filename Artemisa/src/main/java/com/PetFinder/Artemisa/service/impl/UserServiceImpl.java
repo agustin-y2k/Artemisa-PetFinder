@@ -1,16 +1,15 @@
 package com.PetFinder.Artemisa.service.impl;
 
 import com.PetFinder.Artemisa.exception.EntityNotFoundException;
-import com.PetFinder.Artemisa.model.Pet;
 import com.PetFinder.Artemisa.model.User;
-import com.PetFinder.Artemisa.model.payloads.PetResponse;
 import com.PetFinder.Artemisa.model.payloads.UserRequest;
 import com.PetFinder.Artemisa.model.payloads.UserResponse;
-import com.PetFinder.Artemisa.repository.PetRepository;
 import com.PetFinder.Artemisa.repository.UserRepository;
 import com.PetFinder.Artemisa.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,13 +19,13 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PetServiceImpl petService;
+    private final UserRepository userRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<UserResponse> getAllUsers() throws EntityNotFoundException {
@@ -68,30 +67,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserRequest userRequest, Long id) throws EntityNotFoundException {
-        Optional<User> user = userRepository.findById(id);
+    public void updateUser(UserRequest userRequest, String email) throws EntityNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+
         if (!user.isPresent()){
             throw new EntityNotFoundException("User not found");
-        } else {
-            User userExists = userRepository.findByEmail(userRequest.getEmail()).orElse(null);
-            if (userExists != null && !userExists.getId().equals(id)){
-                throw new IllegalArgumentException("User already exists");
-            }
-            User userReceived = user.get();
-            userReceived.setFirstname(userRequest.getFirstname());
-            userReceived.setLastname(userRequest.getLastname());
-            userReceived.setEmail(userRequest.getEmail());
-            userRepository.save(userReceived);
         }
-    }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String emailUser = userDetails.getUsername();
+
+        if (!emailUser.equals(email)){
+            throw new IllegalArgumentException("You can't update this user");
+        }
+
+        User userExists = userRepository.findByEmail(userRequest.getEmail()).orElse(null);
+        if (userExists != null && !userExists.getEmail().equals(email)) {
+            throw new IllegalArgumentException("User already exists");
+        }
+
+        User userReceived = user.get();
+        userReceived.setFirstname(userRequest.getFirstname());
+        userReceived.setLastname(userRequest.getLastname());
+        userReceived.setEmail(userRequest.getEmail());
+        userRepository.save(userReceived);
+        }
+
 
     @Override
-    public void deleteUser(Long id) throws EntityNotFoundException {
-        Optional<User> user = userRepository.findById(id);
+    public void deleteUser(String email) throws EntityNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+
         if (!user.isPresent()){
             throw new EntityNotFoundException("User not found");
-        } else {
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String emailUser = userDetails.getUsername();
+
+        if (emailUser.equals(email) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))){
             userRepository.delete(user.get());
+        } else {
+            throw new IllegalArgumentException("You can't delete this user");
         }
     }
 

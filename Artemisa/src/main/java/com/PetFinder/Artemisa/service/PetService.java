@@ -14,7 +14,7 @@ public interface PetService {
 
     PetResponse getPetById(Long id) throws EntityNotFoundException;
 
-    List<PetResponse> getPetsByOwnerId(Long id) throws EntityNotFoundException;
+    List<PetResponse> getPetsByOwnerEmail(String email) throws EntityNotFoundException;
 
     void createPet(PetRequest petRequest) throws EntityNotFoundException;
 

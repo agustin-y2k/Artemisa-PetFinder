@@ -24,9 +24,6 @@ public class PostRequest {
         @NotNull(message = "Pet type is mandatory")
         private PostType postType;
 
-        @NotNull(message = "User is mandatory")
-        private String userEmail;
-
         @NotNull(message = "Pet is mandatory")
         private Long petId;
 
