@@ -81,7 +81,6 @@ public class UserServiceImpl implements UserService {
             userReceived.setFirstname(userRequest.getFirstname());
             userReceived.setLastname(userRequest.getLastname());
             userReceived.setEmail(userRequest.getEmail());
-            userReceived.setPassword(userRequest.getPassword());
             userRepository.save(userReceived);
         }
     }

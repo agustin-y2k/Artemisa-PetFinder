@@ -38,6 +38,18 @@ public class AuthenticationService {
                 .build();
     }
 
+    public AuthenticationResponse resetPassword(ResetPasswordRequest request) {
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        var jwtToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

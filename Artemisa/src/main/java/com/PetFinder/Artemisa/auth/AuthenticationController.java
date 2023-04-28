@@ -33,5 +33,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
+    // http://localhost:8080/api/v1/auth/reset-password
+    @PostMapping("/reset-password")
+    public ResponseEntity<AuthenticationResponse> resetPassword(
+            @RequestBody ResetPasswordRequest request
+    ) {
+        return ResponseEntity.ok(service.resetPassword(request));
+    }
+
 
 }

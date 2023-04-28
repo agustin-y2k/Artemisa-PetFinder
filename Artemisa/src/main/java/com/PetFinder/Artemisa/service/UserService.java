@@ -23,4 +23,5 @@ public interface UserService {
 
         void deleteUser(Long id) throws EntityNotFoundException;
 
+
 }
