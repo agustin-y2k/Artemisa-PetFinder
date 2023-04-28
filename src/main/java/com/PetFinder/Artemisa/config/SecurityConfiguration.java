@@ -29,12 +29,19 @@ public class SecurityConfiguration {
             "/webjars/**",
             "/actuator/**",
             "/api/v1/auth/**",
-            "/api/v1/**/getAll",
-            "/api/v1/**//getById/**",
-            "/api/v1/**/getByEmail/**",
-            "/api/v1/**/getByUserEmail/**",
-            "/api/v1/**/getByPetId/**",
-            "/api/v1/**/getByPostId/**"
+            "/api/v1/user/getAll",
+            "/api/v1/user/getById/**",
+            "/api/v1/user/getByEmail/**",
+            "/api/v1/pet/getAll",
+            "/api/v1/pet/getById/**",
+            "/api/v1/pet/getByUserEmail/**",
+            "/api/v1/post/getAll",
+            "/api/v1/post/getById/**",
+            "/api/v1/post/getByUserEmail/**",
+            "/api/v1/post/getByPetId/**",
+            "/api/v1/comment/getAll",
+            "/api/v1/comment/getById/**",
+            "/api/v1/comment/getByPostId/**",
     };
 
     @Bean
