@@ -68,17 +68,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserRequest userRequest){
-        User userExists = userRepository.findByEmail(userRequest.getEmail()).orElse(null);
-        if (userExists != null){
-            throw new IllegalArgumentException("User already exists");
-        } else {
-            User user = modelMapper.map(userRequest, User.class);
-            userRepository.save(user);
-        }
-    }
-
-    @Override
     public void updateUser(UserRequest userRequest, Long id) throws EntityNotFoundException {
         Optional<User> user = userRepository.findById(id);
         if (!user.isPresent()){
@@ -92,6 +81,7 @@ public class UserServiceImpl implements UserService {
             userReceived.setFirstname(userRequest.getFirstname());
             userReceived.setLastname(userRequest.getLastname());
             userReceived.setEmail(userRequest.getEmail());
+            userReceived.setPassword(userRequest.getPassword());
             userRepository.save(userReceived);
         }
     }

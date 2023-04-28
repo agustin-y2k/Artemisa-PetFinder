@@ -19,8 +19,6 @@ public interface UserService {
 
         UserResponse getUserByEmail(String email) throws EntityNotFoundException;
 
-        void createUser(UserRequest userRequest);
-
         void updateUser(UserRequest userRequest, Long id) throws EntityNotFoundException;
 
         void deleteUser(Long id) throws EntityNotFoundException;

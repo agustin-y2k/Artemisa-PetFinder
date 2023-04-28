@@ -48,14 +48,6 @@ public class UserController {
         return userService.getUserByEmail(email);
     }
 
-    // localhost:8080/user/create
-    @Operation(summary = "Create user", description = "Create user")
-    @ApiResponse(responseCode = "200", description = "Successful operation")
-    @PostMapping("/create")
-    public void createUser(@Valid @RequestBody UserRequest userRequest) {
-        userService.createUser(userRequest);
-    }
-
     // localhost:8080/user/update
     @Operation(summary = "Update user", description = "Update user")
     @ApiResponse(responseCode = "200", description = "Successful operation")

@@ -54,7 +54,7 @@ public class PetController {
         petService.updatePet(petRequest, id);
     }
 
-    // localhost:8080/pet/delete
+    // localhost:8080/pet/delete/1
     @Operation(summary = "Delete pet", description = "Delete pet")
     @ApiResponse(responseCode = "200", description = "Successful operation")
     @DeleteMapping("/delete/{id}")
