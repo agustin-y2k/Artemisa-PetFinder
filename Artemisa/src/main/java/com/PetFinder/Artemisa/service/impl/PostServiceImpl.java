@@ -11,7 +11,9 @@ import com.PetFinder.Artemisa.repository.PostRepository;
 import com.PetFinder.Artemisa.repository.UserRepository;
 import com.PetFinder.Artemisa.service.PostService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,118 +23,141 @@ import java.util.Optional;
 @Service
 public class PostServiceImpl implements PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PetRepository petRepository;
+    private final PetRepository petRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
 
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, PetRepository petRepository) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.petRepository = petRepository;
+    }
+
     @Override
     public List<PostResponse> getAllPosts() throws EntityNotFoundException {
+
         List<Post> postList = postRepository.findAll();
         if (postList.isEmpty()){
             throw new EntityNotFoundException("Posts not found");
-        } else {
-            List<PostResponse> postResponseList = new ArrayList<>();
-            for (Post post : postList) {
-                PostResponse postResponse = modelMapper.map(post, PostResponse.class);
-                postResponseList.add(postResponse);
-            }
-            return postResponseList;
         }
+
+        List<PostResponse> postResponseList = new ArrayList<>();
+        for (Post post : postList) {
+            PostResponse postResponse = modelMapper.map(post, PostResponse.class);
+            postResponseList.add(postResponse);
+        }
+        return postResponseList;
     }
 
     @Override
     public PostResponse getPostById(Long id) throws EntityNotFoundException{
+
         Optional<Post> post = postRepository.findById(id);
         if (!post.isPresent()){
             throw new EntityNotFoundException("Post not found");
-        } else {
-            Post postReceived = post.get();
-            PostResponse postResponse = modelMapper.map(postReceived, PostResponse.class);
-            return postResponse;
         }
+
+        Post postReceived = post.get();
+        PostResponse postResponse = modelMapper.map(postReceived, PostResponse.class);
+        return postResponse;
     }
 
     @Override
     public void createPost(PostRequest postRequest) throws EntityNotFoundException{
-        Optional<User> user = userRepository.findByEmail(postRequest.getUserEmail());
-        if (!user.isPresent()){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String emailUser = userDetails.getUsername();
+
+        if (!userRepository.findByEmail(emailUser).isPresent()){
             throw new EntityNotFoundException("User not found");
-        } else {
-            Optional<Pet> pet = petRepository.findById(postRequest.getPetId());
-            if (!pet.isPresent()){
-                throw new EntityNotFoundException("Pet not found");
-            } else {
-                Post post = modelMapper.map(postRequest, Post.class);
-                post.setUser(user.get());
-                post.setPet(pet.get());
-                post.setStatus(true);
-                postRepository.save(post);
-            }
         }
+
+        Optional<Pet> pet = petRepository.findById(postRequest.getPetId());
+        if (!pet.isPresent()){
+            throw new EntityNotFoundException("Pet not found");
+        }
+
+        Post post = modelMapper.map(postRequest, Post.class);
+        post.setUser(userRepository.findByEmail(emailUser).get());
+        post.setPet(pet.get());
+        post.setStatus(true);
+        postRepository.save(post);
     }
 
     @Override
     public void updatePost(PostRequest postRequest, Long id) throws EntityNotFoundException {
+
         Optional<Post> post = postRepository.findById(id);
         if (!post.isPresent()){
             throw new EntityNotFoundException("Post not found");
-        } else {
-            Optional<User> user = userRepository.findByEmail(postRequest.getUserEmail());
-            if (!user.isPresent()){
-                throw new EntityNotFoundException("User not found");
-            } else {
-                Optional<Pet> pet = petRepository.findById(postRequest.getPetId());
-                if (!pet.isPresent()){
-                    throw new EntityNotFoundException("Pet not found");
-                } else {
-                    Post postReceived = post.get();
-                    postReceived.setTitle(postRequest.getTitle());
-                    postReceived.setContent(postRequest.getContent());
-                    postReceived.setImage(postRequest.getImage());
-                    postReceived.setPostType(postRequest.getPostType());
-                    postReceived.setUser(user.get());
-                    postReceived.setPet(pet.get());
-                    postRepository.save(postReceived);
-                }
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String emailUser = userDetails.getUsername();
+
+        if (post.get().getUser().getEmail().equals(emailUser) || userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))){
+
+            Optional<Pet> pet = petRepository.findById(postRequest.getPetId());
+            if (!pet.isPresent()){
+                throw new EntityNotFoundException("Pet not found");
             }
+
+            Post postReceived = post.get();
+            postReceived.setTitle(postRequest.getTitle());
+            postReceived.setContent(postRequest.getContent());
+            postReceived.setImage(postRequest.getImage());
+            postReceived.setPostType(postRequest.getPostType());
+            postReceived.setPet(pet.get());
+            postRepository.save(postReceived);
+            }
+        else {
+            throw new EntityNotFoundException("You are not authorized to update this post");
         }
     }
 
     @Override
     public void deletePost(Long id) throws EntityNotFoundException {
+
         Optional<Post> post = postRepository.findById(id);
         if (!post.isPresent()){
             throw new EntityNotFoundException("Post not found");
-        } else {
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String emailUser = userDetails.getUsername();
+
+        if (post.get().getUser().getEmail().equals(emailUser) || userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))){
             postRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("You are not authorized to delete this post");
         }
     }
 
     @Override
-    public List<PostResponse> getPostsByUserId(Long id) throws EntityNotFoundException{
-        Optional<User> user = userRepository.findById(id);
+    public List<PostResponse> getPostsByUserEmail(String email) throws EntityNotFoundException{
+        Optional<User> user = userRepository.findByEmail(email);
         if (!user.isPresent()){
             throw new EntityNotFoundException("User not found");
-        } else {
-            List<Post> postList = postRepository.findByUser(user.get());
-            if (postList.isEmpty()){
-                throw new EntityNotFoundException("Posts not found");
-            } else {
-                List<PostResponse> postResponseList = new ArrayList<>();
-                for (Post post : postList) {
-                    PostResponse postResponse = modelMapper.map(post, PostResponse.class);
-                    postResponseList.add(postResponse);
-                }
-                return postResponseList;
-            }
         }
+
+        List<Post> postList = postRepository.findByUser(user.get());
+        if (postList.isEmpty()){
+            throw new EntityNotFoundException("Posts not found");
+        }
+
+        List<PostResponse> postResponseList = new ArrayList<>();
+        for (Post post : postList) {
+            PostResponse postResponse = modelMapper.map(post, PostResponse.class);
+            postResponseList.add(postResponse);
+        }
+        return postResponseList;
     }
 
     @Override
@@ -140,14 +165,14 @@ public class PostServiceImpl implements PostService {
         Optional<Pet> pet = petRepository.findById(id);
         if (!pet.isPresent()){
             throw new EntityNotFoundException("Pet not found");
-        } else {
-            Post post = postRepository.findByPet(pet.get());
-            if (post == null){
-                throw new EntityNotFoundException("Post not found");
-            } else {
-                PostResponse postResponse = modelMapper.map(post, PostResponse.class);
-                return postResponse;
-            }
         }
+
+        Post post = postRepository.findByPet(pet.get());
+        if (post == null){
+            throw new EntityNotFoundException("Post not found");
+        }
+
+        PostResponse postResponse = modelMapper.map(post, PostResponse.class);
+        return postResponse;
     }
 }

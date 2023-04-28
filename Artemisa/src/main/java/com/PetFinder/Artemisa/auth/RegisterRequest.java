@@ -1,21 +1,17 @@
-package com.PetFinder.Artemisa.model.payloads;
+package com.PetFinder.Artemisa.auth;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequest {
+public class RegisterRequest {
 
     @NotBlank(message = "Name is mandatory")
     private String firstname;
@@ -23,8 +19,10 @@ public class UserRequest {
     @NotBlank(message = "Lastname is mandatory")
     private String lastname;
 
-    @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
     private String email;
 
+    @NotBlank(message = "Password is mandatory")
+    private String password;
 }

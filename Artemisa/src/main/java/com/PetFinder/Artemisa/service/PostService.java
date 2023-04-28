@@ -19,7 +19,7 @@ public interface PostService {
 
     void deletePost(Long id) throws EntityNotFoundException;
 
-    List<PostResponse> getPostsByUserId(Long Id) throws EntityNotFoundException;
+    List<PostResponse> getPostsByUserEmail(String email) throws EntityNotFoundException;
 
     PostResponse getPostsByPetId(Long Id) throws EntityNotFoundException;
 
