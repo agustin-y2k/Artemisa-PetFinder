@@ -21,10 +21,10 @@ public class AuthenticationController {
     // http://localhost:8080/api/v1/auth/register
     @Operation(summary = "Register", description = "Register")
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public String register(
             @RequestBody RegisterRequest request
     ) {
-        return ResponseEntity.ok(service.register(request));
+        return service.register(request);
     }
 
     // http://localhost:8080/api/v1/auth/authenticate

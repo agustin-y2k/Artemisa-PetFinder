@@ -37,6 +37,9 @@ public class User implements UserDetails {
     @Column(length = 60)
     private String password;
 
+    @Column(name = "is_enabled")
+    private boolean isEnabled=false;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
