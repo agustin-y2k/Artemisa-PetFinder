@@ -111,5 +111,4 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("You can't delete this user");
         }
     }
-
 }
