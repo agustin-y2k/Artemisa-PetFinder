@@ -1,5 +1,6 @@
 package com.PetFinder.Artemisa.service;
 
+import com.PetFinder.Artemisa.exception.NotAuthorizedException;
 import com.PetFinder.Artemisa.model.User;
 import com.PetFinder.Artemisa.model.payloads.PetResponse;
 import com.PetFinder.Artemisa.model.payloads.UserRequest;
@@ -19,9 +20,9 @@ public interface UserService {
 
         UserResponse getUserByEmail(String email) throws EntityNotFoundException;
 
-        void updateUser(UserRequest userRequest, String email) throws EntityNotFoundException;
+        void updateUser(UserRequest userRequest, String email) throws EntityNotFoundException, NotAuthorizedException;
 
-        void deleteUser(String email) throws EntityNotFoundException;
+        void deleteUser(String email) throws EntityNotFoundException, NotAuthorizedException;
 
 
 }

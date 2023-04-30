@@ -30,8 +30,6 @@ public class Token {
 
     public boolean expired;
 
-    private LocalDateTime confirmedAt;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     public User user;

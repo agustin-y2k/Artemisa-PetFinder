@@ -1,5 +1,6 @@
 package com.PetFinder.Artemisa.config;
 
+import com.PetFinder.Artemisa.exception.NotAuthorizedException;
 import com.PetFinder.Artemisa.token.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

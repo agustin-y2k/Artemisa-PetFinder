@@ -1,6 +1,7 @@
 package com.PetFinder.Artemisa.controller;
 
 import com.PetFinder.Artemisa.exception.EntityNotFoundException;
+import com.PetFinder.Artemisa.exception.NotAuthorizedException;
 import com.PetFinder.Artemisa.model.payloads.UserRequest;
 import com.PetFinder.Artemisa.model.payloads.UserResponse;
 import com.PetFinder.Artemisa.service.UserService;
@@ -48,14 +49,14 @@ public class UserController {
     // localhost:8080/api/v1/user/update/email
     @Operation(summary = "Update user", description = "Update user")
     @PutMapping("/update/{email}")
-    public void updateUser(@Valid @RequestBody UserRequest userRequest, @PathVariable String email) throws EntityNotFoundException {
+    public void updateUser(@Valid @RequestBody UserRequest userRequest, @PathVariable String email) throws EntityNotFoundException, NotAuthorizedException {
         userService.updateUser(userRequest, email);
     }
 
     // localhost:8080/api/v1/user/delete/email
     @Operation(summary = "Delete user", description = "Delete user")
     @DeleteMapping("/delete/{email}")
-    public void deleteUser(@PathVariable String email) throws EntityNotFoundException {
+    public void deleteUser(@PathVariable String email) throws EntityNotFoundException, NotAuthorizedException {
         userService.deleteUser(email);
     }
 

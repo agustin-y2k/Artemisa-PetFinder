@@ -8,9 +8,9 @@
     username= <your_username>
     password= <your_password>
     
-    # Google key
-    client_id= <your_client_id>
-    client_secret= <your_client_secret>
+    # Email Sender
+    email_username= <your_email>
+    email_password= <your_email_password>
 
 ## Run ArtemisaApplication class
 
@@ -18,10 +18,16 @@
 
 http://localhost:8080/swagger-ui.html
 
-### You can import all the collections in Postman from JSON files in the doc folder
-
 
 ### Authentication on Postman
+
+![Register](https://img.shields.io/badge/Post-Register-blue) **Send an email with a link to confirm the user**
+
+![ConfirmAccount](https://img.shields.io/badge/Get-Confirm%20Account-blue) **Confirm the user**
+
+![Login](https://img.shields.io/badge/Post-Login-blue) **Give the auth token**
+
+![Logout](https://img.shields.io/badge/Post-Logout-blue)  **Need the auth token**
 
 ![Authentication-example](doc/bearer-token-example.jpg)
 

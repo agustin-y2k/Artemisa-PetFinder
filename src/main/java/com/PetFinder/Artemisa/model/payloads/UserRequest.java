@@ -23,6 +23,12 @@ public class UserRequest {
     @NotBlank(message = "Lastname is mandatory")
     private String lastname;
 
+    @NotBlank(message = "Address is mandatory")
+    private String address;
+
+    @NotBlank(message = "Phone is mandatory")
+    private String phone;
+
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")
     private String email;

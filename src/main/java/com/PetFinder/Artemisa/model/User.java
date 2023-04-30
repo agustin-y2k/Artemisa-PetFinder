@@ -31,17 +31,23 @@ public class User implements UserDetails {
     @Column(name = "last_name")
     private String lastname;
 
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone")
+    private String phone;
+
     @Column(name = "email")
     private String email;
 
     @Column(length = 60)
     private String password;
 
-    @Column(name = "is_enabled")
-    private boolean isEnabled=false;
-
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "enabled")
+    private boolean enabled;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
@@ -89,9 +95,5 @@ public class User implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 
 }

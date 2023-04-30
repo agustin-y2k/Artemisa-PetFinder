@@ -1,6 +1,7 @@
 package com.PetFinder.Artemisa.service.impl;
 
 import com.PetFinder.Artemisa.exception.EntityNotFoundException;
+import com.PetFinder.Artemisa.exception.NotAuthorizedException;
 import com.PetFinder.Artemisa.model.User;
 import com.PetFinder.Artemisa.model.payloads.UserRequest;
 import com.PetFinder.Artemisa.model.payloads.UserResponse;
@@ -29,34 +30,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers() throws EntityNotFoundException {
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userRepository.findAll().stream().filter(User::isEnabled).toList();
         if (userList.isEmpty()){
             throw new EntityNotFoundException("Users not found");
-        } else {
-            List<UserResponse> userResponseList = new ArrayList<>();
-            for (User user : userList) {
-                UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-                userResponseList.add(userResponse);
-            }
-            return userResponseList;
         }
+
+        List<UserResponse> userResponseList = new ArrayList<>();
+        for (User user : userList) {
+            UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+            userResponseList.add(userResponse);
+        }
+        return userResponseList;
     }
 
     @Override
     public UserResponse getUserById(Long id) throws EntityNotFoundException {
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findById(id).filter(User::isEnabled);
         if (!user.isPresent()){
             throw new EntityNotFoundException("User not found");
-        } else {
-            User userReceived = user.get();
-            UserResponse userResponse = modelMapper.map(userReceived, UserResponse.class);
-            return userResponse;
         }
+        User userReceived = user.get();
+        UserResponse userResponse = modelMapper.map(userReceived, UserResponse.class);
+        return userResponse;
     }
 
     @Override
     public UserResponse getUserByEmail(String email) throws EntityNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email).filter(User::isEnabled);
         if (!user.isPresent()){
             throw new EntityNotFoundException("User not found");
         } else {
@@ -67,8 +67,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserRequest userRequest, String email) throws EntityNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
+    public void updateUser(UserRequest userRequest, String email) throws EntityNotFoundException, NotAuthorizedException {
+        Optional<User> user = userRepository.findByEmail(email).filter(User::isEnabled);
 
         if (!user.isPresent()){
             throw new EntityNotFoundException("User not found");
@@ -90,14 +90,12 @@ public class UserServiceImpl implements UserService {
         User userReceived = user.get();
         userReceived.setFirstname(userRequest.getFirstname());
         userReceived.setLastname(userRequest.getLastname());
-        userReceived.setEmail(userRequest.getEmail());
         userRepository.save(userReceived);
         }
 
-
     @Override
-    public void deleteUser(String email) throws EntityNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
+    public void deleteUser(String email) throws EntityNotFoundException, NotAuthorizedException {
+        Optional<User> user = userRepository.findByEmail(email).filter(User::isEnabled);
 
         if (!user.isPresent()){
             throw new EntityNotFoundException("User not found");

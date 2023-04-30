@@ -1,10 +1,32 @@
 package com.PetFinder.Artemisa.email;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
-public interface EmailService {
+@Service
+public class EmailService {
 
-    String sendSimpleMail(EmailDetails details);
+    private final JavaMailSender mailSender;
 
-    String sendMailWithAttachment(EmailDetails details);
-    
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
+    public void sendMail(String toEmail,
+                        String subject,
+                        String body) throws EmailException{
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("team@artemisapetfinder.com");
+            message.setTo(toEmail);
+            message.setText(body);
+            message.setSubject(subject);
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new EmailException("Error while sending email");
+        }
+
+    }
+
 }
